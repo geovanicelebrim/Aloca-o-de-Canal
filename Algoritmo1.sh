@@ -37,7 +37,7 @@ then
 	#Obtem ocupação e o ruido de todos os canais---------------
 	for c in $vetCanais; do
 		clear
-		echo "Analizando canal ${c}"
+		echo "Analisando canal ${c}"
 		#Obtem uso do canal
 		wl rm_req cca -c $c -d 50
 		sleep 1
