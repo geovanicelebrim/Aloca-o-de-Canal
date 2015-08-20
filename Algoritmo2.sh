@@ -1,3 +1,5 @@
+echo "---Algoritmo 2 (Desconsiderando o Ruido)----" >> log.txt
+echo "$(date)" >> log.txt
 vetCanais="$(wl channels)"
 vetCanais=$(echo $vetCanais | tr " ")
 vetUso=""
@@ -7,7 +9,8 @@ vetNivel=""
 #Obtém o uso do canal atual------------------------------------
 vetCanalAtual="$(wl channel)"
 vetCanalAtual=$(echo $vetCanalAtual | tr " ")
-for c in $vetCanalAtual; do
+for c in $vetCanalAtual
+do
 	canalAtual=$c
 done
 
@@ -28,15 +31,29 @@ done
 #--------------------------------------------------------------
 
 #Verifica se a ocupação está dentro da tolerância--------------
-clear
 tolerancia=1
+
+if [ $ocupacaoAtual -lt $tolerancia ]
+then
+	echo "Ocupação dentro da tolerância."
+	echo "Ocupação dentro da tolerância." >> log.txt
+fi
+
+echo "Canal atual: ${canalAtual}."
+echo "Ocupação: ${ocupacaoAtual}."
+echo "Tolerância: ${tolerancia}."
+echo "Canal atual: ${canalAtual}." >> log.txt
+echo "Ocupação: ${ocupacaoAtual}." >> log.txt
+echo "Tolerância: ${tolerancia}." >> log.txt
 
 if [ $tolerancia -lt $ocupacaoAtual ]
 then
+	echo "Ocupação fora da tolerância."
+	echo "Ocupação fora da tolerância." >> log.txt
 	
 	#Obtem ocupação dos canais
-	for c in $vetCanais; do
-		clear
+	for c in $vetCanais
+	do
 		echo "Analisando canal ${c}"
 		#Obtem uso do canal
 		wl rm_req cca -c $c -d 50
@@ -54,16 +71,16 @@ then
 				vetUso="${vetUso} ${ocupacao}"
 			fi
 		done
-		clear
+		echo "Canal ${c}     Ocupação ${ocupacao}."
+		echo "Canal ${c}     Ocupação ${ocupacao}." >> log.txt
 	done
 
 	#Calcula o melhor canal.-------------------------------------
 
-	clear
 	cont=0
 	eleito=1
 	ocupacaoAux=256
-	#Seleciona os canais canditados.
+
 	for c in $vetUso
 	do
 		cont=$(($cont+1))
@@ -79,8 +96,10 @@ then
 	if test $canalAtual != $eleito
 	then
 		wl down;	wl channel $eleito;	wl up;
-		echo "Canal anterior: ${canalAtual}. Novo canal: ${eleito}."
 	fi
 
 	#Fim--------------------------------------------------------------------------
 fi
+echo "Canal anterior: ${canalAtual}. Novo canal: ${eleito}."
+echo "Canal anterior: ${canalAtual}. Novo canal: ${eleito}." >> log.txt
+echo "--------------------------------------------" >> log.txt

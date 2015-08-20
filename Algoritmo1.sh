@@ -1,3 +1,5 @@
+echo "-----Algoritmo 1 (Considerando o Ruido)-----" >> log.txt
+echo "$(date)" >> log.txt
 vetCanais="$(wl channels)"
 vetCanais=$(echo $vetCanais | tr " ")
 vetUso=""
@@ -28,15 +30,28 @@ done
 #--------------------------------------------------------------
 
 #Verifica se a ocupação está dentro da tolerância--------------
-clear
-tolerancia=30
+tolerancia=1
+
+if [ $ocupacaoAtual -lt $tolerancia ]
+then
+	echo "Ocupação dentro da tolerância."
+	echo "Ocupação dentro da tolerância." >> log.txt
+fi
+
+echo "Canal atual: ${canalAtual}."
+echo "Ocupação: ${ocupacaoAtual}."
+echo "Tolerância: ${tolerancia}."
+echo "Canal atual: ${canalAtual}." >> log.txt
+echo "Ocupação: ${ocupacaoAtual}." >> log.txt
+echo "Tolerância: ${tolerancia}." >> log.txt
 
 if [ $tolerancia -lt $ocupacaoAtual ]
 then
-	
+	echo "Ocupação fora da tolerância."
+	echo "Ocupação fora da tolerância." >> log.txt
+
 	#Obtem ocupação e o ruido de todos os canais---------------
 	for c in $vetCanais; do
-		clear
 		echo "Analisando canal ${c}"
 		#Obtem uso do canal
 		wl rm_req cca -c $c -d 50
@@ -54,7 +69,6 @@ then
 				vetUso="${vetUso} ${ocupacao}"
 			fi
 		done
-		clear
 
 		#Obtém o ruido do canal
 		wl rm_req rpi -c $c -d 50
@@ -82,14 +96,14 @@ then
 				vetRuido="${vetRuido} ${ruido}"
 				vetNivel=""
 			fi
-
 		done
+		echo "Canal ${c}     Ocupação ${ocupacao}     Ruído ${ruido}."
+		echo "Canal ${c}     Ocupação ${ocupacao}     Ruído ${ruido}." >> log.txt
 	done
 
 
 	#Calcula o melhor canal.-------------------------------------
 
-	clear
 	cont=0
 	candidatos=""
 
@@ -132,8 +146,10 @@ then
 	if test $canalAtual != $melhorCanal
 	then
 		wl down;	wl channel $melhorCanal;	wl up;
-		echo "Canal anterior: ${canalAtual}. Novo canal: ${melhorCanal}."
 	fi
 
 	#Fim--------------------------------------------------------------------------
 fi
+echo "Canal anterior: ${canalAtual}. Novo canal: ${melhorCanal}."
+echo "Canal anterior: ${canalAtual}. Novo canal: ${melhorCanal}." >> log.txt
+echo "--------------------------------------------" >> log.txt
